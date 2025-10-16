@@ -1,5 +1,7 @@
 # Gmail-TripIt Historic Import
 
+[![Tests](https://github.com/TylerLeonhardt/gmail-tripit-historic-import/actions/workflows/tests.yml/badge.svg)](https://github.com/TylerLeonhardt/gmail-tripit-historic-import/actions/workflows/tests.yml)
+
 A Python system for importing 20+ years of historical flight confirmations from Gmail to TripIt. This implementation follows the comprehensive specifications in [spec.md](spec.md).
 
 ## Features
