@@ -180,9 +180,9 @@ class FlightParser:
         """Extract flight info using regex patterns"""
         data = {}
         
-        # Booking reference (look near keywords)
+        # Booking reference (look near keywords with better pattern)
         booking = re.search(
-            r'(?:booking|confirmation|reference|pnr)[:\s]+([A-Z0-9]{5,7})',
+            r'(?:booking|confirmation|reference|pnr)(?:\s+number)?[:\s]+([A-Z0-9]{5,7})\b',
             text,
             re.IGNORECASE
         )
