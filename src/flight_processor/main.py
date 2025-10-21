@@ -72,7 +72,11 @@ def phase1_label_emails(args, service, state_manager):
     # Initialize components
     searcher = EmailSearcher(service)
     classifier = FlightClassifier()
-    parser = FlightParser()
+    parser = FlightParser(
+        use_ai=args.use_ai,
+        ai_api_key=settings.ANTHROPIC_API_KEY,
+        ai_model=settings.AI_MODEL
+    )
     label_manager = LabelManager(service)
     
     # Get or create label
@@ -254,6 +258,8 @@ Examples:
     parser.add_argument('--log-level', default=settings.LOG_LEVEL,
                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
                        help='Logging level (default: INFO)')
+    parser.add_argument('--use-ai', action='store_true',
+                       help='Use AI (Claude) as a fallback parsing strategy. Requires ANTHROPIC_API_KEY.')
     
     args = parser.parse_args()
     
@@ -264,8 +270,21 @@ Examples:
     if args.dry_run:
         DryRunManager.enable()
     
+    # Validate AI configuration if requested
+    if args.use_ai:
+        if not settings.ANTHROPIC_API_KEY or settings.ANTHROPIC_API_KEY == "your-api-key-here":
+            logger.error("AI parsing requested but ANTHROPIC_API_KEY not configured.")
+            logger.error("Set ANTHROPIC_API_KEY in environment or .env file.")
+            logger.error("Get your API key from: https://console.anthropic.com/")
+            return
+        logger.info(f"AI parsing enabled using model: {settings.AI_MODEL}")
+    
     logger.info("Gmail-TripIt Historic Import System")
     logger.info(f"Dry-run mode: {DryRunManager.is_enabled()}")
+    if args.use_ai:
+        logger.info("AI parsing: Enabled (Claude will be used as fallback)")
+    else:
+        logger.info("AI parsing: Disabled (use --use-ai to enable)")
     
     # Initialize database
     init_database(settings.DB_PATH)

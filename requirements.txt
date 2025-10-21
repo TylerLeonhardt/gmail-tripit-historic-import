@@ -18,6 +18,9 @@ hdbscan>=0.8.0
 backoff>=2.2.0
 python-dateutil>=2.8.0
 
+# AI parsing (optional)
+anthropic>=0.18.0
+
 # Optional but recommended
 pandas>=2.0.0
 extruct>=0.15.0

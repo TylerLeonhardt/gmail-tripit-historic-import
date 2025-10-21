@@ -11,6 +11,31 @@ logger = logging.getLogger(__name__)
 class FlightParser:
     """Multi-strategy flight email parser"""
     
+    def __init__(self, use_ai=False, ai_api_key=None, ai_model=None):
+        """
+        Initialize parser
+        
+        Args:
+            use_ai: Whether to use AI as a fallback parsing strategy
+            ai_api_key: Anthropic API key (required if use_ai=True)
+            ai_model: Claude model to use (optional)
+        """
+        self.use_ai = use_ai
+        self.ai_parser = None
+        
+        if use_ai:
+            if not ai_api_key:
+                logger.warning("AI parsing enabled but no API key provided. AI fallback disabled.")
+                self.use_ai = False
+            else:
+                try:
+                    from .ai_parser import AIParser
+                    self.ai_parser = AIParser(api_key=ai_api_key, model=ai_model or "claude-3-5-sonnet-20241022")
+                    logger.info("AI parsing enabled with Claude")
+                except Exception as e:
+                    logger.warning(f"Failed to initialize AI parser: {e}. AI fallback disabled.")
+                    self.use_ai = False
+    
     def parse(self, email_data):
         """
         Parse flight details from email using multiple strategies
@@ -57,6 +82,17 @@ class FlightParser:
                 return data
         except Exception as e:
             logger.debug(f"Regex parsing failed: {e}")
+        
+        # Strategy 4: AI parsing (optional fallback)
+        if self.use_ai and self.ai_parser:
+            try:
+                logger.info("Attempting AI parsing as final fallback")
+                data = self.ai_parser.parse(email_data)
+                if data:
+                    logger.info("Successfully parsed using AI")
+                    return data
+            except Exception as e:
+                logger.debug(f"AI parsing failed: {e}")
         
         logger.warning("All parsing strategies failed")
         return None

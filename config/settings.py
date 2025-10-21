@@ -38,6 +38,10 @@ after:2000/01/01
 
 SEARCH_QUERY = os.getenv("SEARCH_QUERY", DEFAULT_SEARCH_QUERY)
 
+# AI Parsing Configuration
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", None)
+AI_MODEL = os.getenv("AI_MODEL", "claude-3-5-sonnet-20241022")
+
 # Ensure directories exist
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 LOGS_DIR.mkdir(parents=True, exist_ok=True)

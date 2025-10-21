@@ -159,6 +159,26 @@ python run.py --phase 1 --query "subject:confirmation after:2020/01/01"
 python run.py --phase 1 --label-name "My Flight Emails"
 ```
 
+### AI-Powered Parsing
+
+For emails that are difficult to parse with standard methods, enable AI parsing:
+
+```bash
+# Set your Claude API key (get from https://console.anthropic.com/)
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+# Run with AI enabled
+python run.py --phase 1 --use-ai
+```
+
+The AI parser uses Claude 3.5 Sonnet and will only be called when Schema.org, HTML table, and regex parsing all fail. This is useful for:
+- Very old email formats (pre-2010)
+- Non-standard airline confirmations
+- Complex or unusual email layouts
+- Maximizing parse success rate
+
+Note: AI parsing requires an Anthropic API key and will incur API costs (typically $0.003-0.015 per 1000 tokens).
+
 ### Skip Deduplication
 
 ```bash

@@ -9,7 +9,8 @@ A Python system for importing 20+ years of historical flight confirmations from 
 - **Two-Phase Workflow**: 
   - Phase 1: Search, classify, parse, and label flight confirmation emails
   - Phase 2: Forward labeled emails to TripIt
-- **Multi-Strategy Parsing**: Schema.org markup → HTML tables → Regex fallback
+- **Multi-Strategy Parsing**: Schema.org markup → HTML tables → Regex fallback → AI (optional)
+- **AI-Powered Parsing**: Optional Claude AI integration for difficult-to-parse emails
 - **Duplicate Detection**: Fuzzy PNR matching to avoid duplicate submissions
 - **State Management**: SQLite-based tracking to enable resumption and prevent re-processing
 - **Dry-Run Mode**: Test the entire workflow without making any changes
@@ -125,7 +126,29 @@ python run.py --phase 2 --no-deduplicate
 
 # Change log level
 python run.py --log-level DEBUG
+
+# Enable AI parsing (requires Claude API key)
+python run.py --phase 1 --use-ai
 ```
+
+### AI-Powered Parsing (Optional)
+
+Enable AI as a final fallback for emails that can't be parsed by standard methods:
+
+1. **Get API Key**: Sign up at [Anthropic Console](https://console.anthropic.com/) and get your API key
+
+2. **Set Environment Variable**:
+```bash
+export ANTHROPIC_API_KEY="your-api-key-here"
+# Or add to config/.env file
+```
+
+3. **Run with AI enabled**:
+```bash
+python run.py --phase 1 --use-ai
+```
+
+The AI parser will only be used when Schema.org, HTML table, and regex parsing all fail. It uses Claude 3.5 Sonnet to intelligently extract flight details from difficult-to-parse emails.
 
 ## Project Structure
 
